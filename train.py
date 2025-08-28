@@ -6,13 +6,13 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 
 kinematics= {"type": "Kinematics",
-             "features": ["x", "y", "vx", "vy"],
+             "features": ["x", "vx", "vy"],
              "absolute": False,
              "normalize": True,
              "vehicles_count": 1}
 occupancy_grid = {"type": "OccupancyGrid",
         "features": ["presence", "on_road"],
-        "grid_size": [[0, 64], [-24, 24]], #  only forward looking
+        "grid_size": [[0, 56], [-16, 16]], #  only forward looking
         "grid_step": [2, 2],
         "as_image": False,
         "align_to_vehicle_axes": True, }
@@ -20,7 +20,6 @@ occupancy_grid = {"type": "OccupancyGrid",
 
 observation = {"type": "DictObservation",
                "observation_configs": [kinematics, occupancy_grid]}
-
 
 config = {
     "observation": observation,
@@ -31,16 +30,16 @@ config = {
         "dynamical": True,
         "steering_range": [-np.pi/3, np.pi/3],
     },
-    "simulation_frequency": 22,
+    "simulation_frequency": 15,
     "policy_frequency": 5,
     "duration": 300,
     "collision_reward": -1,
     "lane_centering_cost": 4,
-    "lane_centering_reward": 1,
-    "action_reward": -0.4,
-    "speed_reward": 0.1,
+    "lane_centering_reward": 0.3,
+    "action_reward": -0.7,
+    "speed_reward": 1,
     "controlled_vehicles": 1,
-    "other_vehicles": 5,
+    "other_vehicles": 3,
     "screen_width": 600,
     "screen_height": 600,
     "centering_position": [0.5, 0.5],
@@ -49,7 +48,7 @@ config = {
 }
 
 def make_env():
-    return  gym.make("racetrack-large-v0", config = config)
+    return  gym.make("racetrack-large-v0", config = config,)
 
 def test_observation_space():
     """Test function to check observation space dimensions"""
@@ -72,30 +71,30 @@ if __name__ == "__main__":
     n_runs = 10 # number of training runs
     n_timesteps = 1e5 # number of timesteps per training
 
-    cores = 6
+    cores = 12
     batch_size = 64
     env = make_vec_env(make_env, n_envs=cores, vec_env_cls=SubprocVecEnv, vec_env_kwargs={'start_method': 'fork'} ) # Subproccesenv does not work something with multiInput
 
-    # model = PPO(
-    #     "MultiInputPolicy",
-    #     env,
-    #     policy_kwargs=dict(net_arch=dict(pi=[256, 256], vf=[256, 256])),
-    #     n_steps=batch_size * 12 // cores,
-    #     batch_size=batch_size,
-    #     n_epochs=10,
-    #     learning_rate=5e-4,
-    #     gamma=0.9,
-    #     verbose=2,
-    #     tensorboard_log="racetrack_ppo/",
-    #     device="cpu",)
-    model = PPO.load(path= "models/racecar-3400000", env = env, device='cpu')
+    model = PPO(
+        "MultiInputPolicy",
+        env,
+        policy_kwargs=dict(net_arch=dict(pi=[256, 256], vf=[256, 256])),
+        n_steps=batch_size * 8 // cores,
+        batch_size=batch_size,
+        n_epochs=10,
+        learning_rate=4e-4,
+        gamma=0.9,
+        verbose=2,
+        tensorboard_log="racetrack_ppo/",
+        device="cpu",)
+    # model = PPO.load(path= "models/racecar-3400000", env = env, device='cpu')
 
     # Train
-    iter = 34
+    iter = 0
     while True:
         iter += 1
         model.learn(total_timesteps=n_timesteps, reset_num_timesteps=False)
-        model.save(f"models/racecar-{int(n_timesteps * iter)}.zip")
+        model.save(f"models/racecar-{int(iter)}.zip")
 
 
 
