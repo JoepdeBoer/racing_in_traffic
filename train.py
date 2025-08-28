@@ -6,16 +6,17 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 
 kinematics= {"type": "Kinematics",
-             "features": ["y", "vx", "vy"],
+             "features": ["x", "y", "vx", "vy"],
              "absolute": False,
              "normalize": True,
              "vehicles_count": 1}
 occupancy_grid = {"type": "OccupancyGrid",
         "features": ["presence", "on_road"],
-        "grid_size": [[-16, 16], [0, 32]], #  only forward looking
+        "grid_size": [[0, 64], [-24, 24]], #  only forward looking
         "grid_step": [2, 2],
         "as_image": False,
         "align_to_vehicle_axes": True, }
+
 
 observation = {"type": "DictObservation",
                "observation_configs": [kinematics, occupancy_grid]}
@@ -36,7 +37,8 @@ config = {
     "collision_reward": -1,
     "lane_centering_cost": 4,
     "lane_centering_reward": 1,
-    "action_reward": -0.3,
+    "action_reward": -0.4,
+    "speed_reward": 0.1,
     "controlled_vehicles": 1,
     "other_vehicles": 5,
     "screen_width": 600,
@@ -74,25 +76,26 @@ if __name__ == "__main__":
     batch_size = 64
     env = make_vec_env(make_env, n_envs=cores, vec_env_cls=SubprocVecEnv, vec_env_kwargs={'start_method': 'fork'} ) # Subproccesenv does not work something with multiInput
 
-    model = PPO(
-        "MultiInputPolicy",
-        env,
-        policy_kwargs=dict(net_arch=dict(pi=[256, 256], vf=[256, 256])),
-        n_steps=batch_size * 12 // cores,
-        batch_size=batch_size,
-        n_epochs=10,
-        learning_rate=5e-4,
-        gamma=0.9,
-        verbose=2,
-        tensorboard_log="racetrack_ppo/",
-        device="cpu",)
+    # model = PPO(
+    #     "MultiInputPolicy",
+    #     env,
+    #     policy_kwargs=dict(net_arch=dict(pi=[256, 256], vf=[256, 256])),
+    #     n_steps=batch_size * 12 // cores,
+    #     batch_size=batch_size,
+    #     n_epochs=10,
+    #     learning_rate=5e-4,
+    #     gamma=0.9,
+    #     verbose=2,
+    #     tensorboard_log="racetrack_ppo/",
+    #     device="cpu",)
+    model = PPO.load(path= "models/racecar-3400000", env = env, device='cpu')
 
     # Train
-    iter = 0
+    iter = 34
     while True:
         iter += 1
         model.learn(total_timesteps=n_timesteps, reset_num_timesteps=False)
-        model.save(f"models/racecar-{n_timesteps * iter}")
+        model.save(f"models/racecar-{int(n_timesteps * iter)}.zip")
 
 
 
