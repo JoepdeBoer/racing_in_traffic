@@ -36,14 +36,15 @@ config = {
     "collision_reward": -1,
     "lane_centering_cost": 4,
     "lane_centering_reward": 0.3,
+    "right_lane_reward": 0.6,
     "action_reward": -0.7,
     "speed_reward": 1,
     "controlled_vehicles": 1,
-    "other_vehicles": 3,
+    "other_vehicles": 10,
     "screen_width": 600,
     "screen_height": 600,
     "centering_position": [0.5, 0.5],
-    "speed_limit": 25,
+    "speed_limit": 30,
     "terminate_off_road": True,
 }
 
@@ -97,7 +98,7 @@ if __name__ == "__main__":
     while True:
         iter += 1
         model.learn(total_timesteps=n_timesteps, reset_num_timesteps=False)
-        model.save(f"models/racecar-{int(iter)}.zip")
+        model.save(f"models/racecar2-{int(iter)}.zip")
 
 
 
