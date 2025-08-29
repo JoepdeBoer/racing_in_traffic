@@ -73,13 +73,16 @@ if __name__ == "__main__":
 
     cores = 12
     batch_size = 64
+    nsteps = 128
+    training_data = nsteps * cores
+    batch_size = training_data //8
     env = make_vec_env(make_env, n_envs=cores, vec_env_cls=SubprocVecEnv, vec_env_kwargs={'start_method': 'fork'} ) # Subproccesenv does not work something with multiInput
 
     model = PPO(
         "MultiInputPolicy",
         env,
         policy_kwargs=dict(net_arch=dict(pi=[256, 256], vf=[256, 256])),
-        n_steps=batch_size * 8 // cores,
+        n_steps=nsteps,
         batch_size=batch_size,
         n_epochs=10,
         learning_rate=4e-4,

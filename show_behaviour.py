@@ -8,7 +8,7 @@ from train import config
 if __name__ == "__main__":
 
     env = gym.make("racetrack-large-v0", config=config, render_mode="human")
-    modelpath = "./models/racecar-4000000"
+    modelpath = "./models/racecar-25"
     model = PPO.load(modelpath, env=env, device ="cpu")
     observation, info = env.reset()
     episode_over = False
