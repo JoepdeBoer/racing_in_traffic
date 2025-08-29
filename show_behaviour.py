@@ -6,9 +6,11 @@ from train import config
 
 
 if __name__ == "__main__":
+    config['average_speed'] = 6
+    config['other_vehicles'] = 10
 
     env = gym.make("racetrack-large-v0", config=config, render_mode="human")
-    modelpath = "./models/racecar-25"
+    modelpath = "./models/racecar2-5"
     model = PPO.load(modelpath, env=env, device ="cpu")
     observation, info = env.reset()
     episode_over = False

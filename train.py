@@ -17,9 +17,15 @@ occupancy_grid = {"type": "OccupancyGrid",
         "as_image": False,
         "align_to_vehicle_axes": True, }
 
+Lidar = {"type": "LidarObservation",
+         "cells": 64,
+         "maximum_range": 32,
+         "normalize": True,
+         }
+
 
 observation = {"type": "DictObservation",
-               "observation_configs": [kinematics, occupancy_grid]}
+               "observation_configs": [kinematics, Lidar, occupancy_grid]}
 
 config = {
     "observation": observation,
@@ -40,14 +46,16 @@ config = {
     "action_reward": -0.7,
     "speed_reward": 1,
     "controlled_vehicles": 1,
-    "other_vehicles": 10,
+    "other_vehicles": 2,
     "screen_width": 600,
     "screen_height": 600,
     "centering_position": [0.5, 0.5],
-    "speed_limit": 30,
+    "speed_limit": 10,
+    "average_speed": 7,
     "terminate_off_road": True,
 }
 
+env = gym.make("racetrack-large", config=config, render_mode = "human")
 def make_env():
     return  gym.make("racetrack-large-v0", config = config,)
 
@@ -86,10 +94,10 @@ if __name__ == "__main__":
         n_steps=nsteps,
         batch_size=batch_size,
         n_epochs=10,
-        learning_rate=4e-4,
+        learning_rate=3e-4,
         gamma=0.9,
         verbose=2,
-        tensorboard_log="racetrack_ppo/",
+        tensorboard_log="limo_ppo/",
         device="cpu",)
     # model = PPO.load(path= "models/racecar-3400000", env = env, device='cpu')
 
@@ -98,7 +106,7 @@ if __name__ == "__main__":
     while True:
         iter += 1
         model.learn(total_timesteps=n_timesteps, reset_num_timesteps=False)
-        model.save(f"models/racecar2-{int(iter)}.zip")
+        model.save(f"models/vip-{int(iter)}.zip")
 
 
 
