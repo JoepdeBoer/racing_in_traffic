@@ -102,7 +102,7 @@ if __name__ == "__main__":
 
 
     # Train
-    iter = 9
+    iter = 12
     model = PPO.load(path=f"models/bigbrainvip-{iter}", env=env, device='cpu')
     while True:
         iter += 1

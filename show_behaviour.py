@@ -10,7 +10,7 @@ if __name__ == "__main__":
     # config['screen_height'] = 1000
 
     env = gym.make("racetrack-large-v0", config=config, render_mode = "human")
-    modelpath = "./models/bigbrainvip-9"
+    modelpath = "./models/bigbrainvip-11"
     model = PPO.load(modelpath, env=env, device ="cpu")
     observation, info = env.reset()
     episode_over = False
