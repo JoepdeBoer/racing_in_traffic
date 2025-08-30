@@ -55,7 +55,7 @@ config = {
     "terminate_off_road": True,
 }
 
-env = gym.make("racetrack-large", config=config, render_mode = "human")
+
 def make_env():
     return  gym.make("racetrack-large-v0", config = config,)
 

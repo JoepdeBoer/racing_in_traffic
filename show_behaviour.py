@@ -9,8 +9,8 @@ if __name__ == "__main__":
     config['average_speed'] = 6
     config['other_vehicles'] = 10
 
-    env = gym.make("racetrack-large-v0", config=config, render_mode="human")
-    modelpath = "./models/racecar2-5"
+    env = gym.make("racetrack-large-v0", config=config)
+    modelpath = "./models/vip-32"
     model = PPO.load(modelpath, env=env, device ="cpu")
     observation, info = env.reset()
     episode_over = False
