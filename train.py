@@ -12,14 +12,14 @@ kinematics= {"type": "Kinematics",
              "vehicles_count": 1}
 occupancy_grid = {"type": "OccupancyGrid",
         "features": ["presence", "on_road"],
-        "grid_size": [[0, 56], [-16, 16]], #  only forward looking
-        "grid_step": [2, 2],
+        "grid_size": [[0, 40], [-8, 8]],
+        "grid_step": [1, 1],
         "as_image": False,
         "align_to_vehicle_axes": True, }
 
 Lidar = {"type": "LidarObservation",
          "cells": 64,
-         "maximum_range": 32,
+         "maximum_range": 64,
          "normalize": True,
          }
 
@@ -90,14 +90,14 @@ if __name__ == "__main__":
     model = PPO(
         "MultiInputPolicy",
         env,
-        policy_kwargs=dict(net_arch=dict(pi=[256, 256], vf=[256, 256])),
+        policy_kwargs=dict(net_arch=dict(pi=[1024, 512, 256], vf=[1024, 512, 256])),
         n_steps=nsteps,
         batch_size=batch_size,
         n_epochs=10,
         learning_rate=3e-4,
         gamma=0.9,
         verbose=2,
-        tensorboard_log="limo_ppo/",
+        tensorboard_log="bigbrainlimo_ppo/",
         device="cpu",)
     # model = PPO.load(path= "models/racecar-3400000", env = env, device='cpu')
 
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     while True:
         iter += 1
         model.learn(total_timesteps=n_timesteps, reset_num_timesteps=False)
-        model.save(f"models/vip-{int(iter)}.zip")
+        model.save(f"models/bigbrainvip-{int(iter)}.zip")
 
 
 
