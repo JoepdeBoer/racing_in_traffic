@@ -80,29 +80,30 @@ if __name__ == "__main__":
     n_runs = 10 # number of training runs
     n_timesteps = 1e5 # number of timesteps per training
 
-    cores = 12
+    cores = 8
     batch_size = 64
     nsteps = 128
     training_data = nsteps * cores
     batch_size = training_data //8
     env = make_vec_env(make_env, n_envs=cores, vec_env_cls=SubprocVecEnv, vec_env_kwargs={'start_method': 'fork'} ) # Subproccesenv does not work something with multiInput
 
-    model = PPO(
-        "MultiInputPolicy",
-        env,
-        policy_kwargs=dict(net_arch=dict(pi=[1024, 512, 256], vf=[1024, 512, 256])),
-        n_steps=nsteps,
-        batch_size=batch_size,
-        n_epochs=10,
-        learning_rate=3e-4,
-        gamma=0.9,
-        verbose=2,
-        tensorboard_log="bigbrainlimo_ppo/",
-        device="cpu",)
-    # model = PPO.load(path= "models/racecar-3400000", env = env, device='cpu')
+    # model = PPO(
+    #     "MultiInputPolicy",
+    #     env,
+    #     policy_kwargs=dict(net_arch=dict(pi=[1024, 512, 256], vf=[1024, 512, 256])),
+    #     n_steps=nsteps,
+    #     batch_size=batch_size,
+    #     n_epochs=10,
+    #     learning_rate=3e-4,
+    #     gamma=0.9,
+    #     verbose=2,
+    #     tensorboard_log="bigbrainlimo_ppo/",
+    #     device="cpu",)
+
 
     # Train
-    iter = 0
+    iter = 9
+    model = PPO.load(path=f"models/bigbrainvip-{iter}", env=env, device='cpu')
     while True:
         iter += 1
         model.learn(total_timesteps=n_timesteps, reset_num_timesteps=False)

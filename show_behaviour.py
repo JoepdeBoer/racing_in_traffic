@@ -6,11 +6,11 @@ from train import config
 
 
 if __name__ == "__main__":
-    # config['average_speed'] = 6
-    # config['other_vehicles'] = 10
+    # config['screen_width'] = 1000
+    # config['screen_height'] = 1000
 
     env = gym.make("racetrack-large-v0", config=config, render_mode = "human")
-    modelpath = "./models/vip-32"
+    modelpath = "./models/bigbrainvip-9"
     model = PPO.load(modelpath, env=env, device ="cpu")
     observation, info = env.reset()
     episode_over = False
@@ -21,7 +21,7 @@ if __name__ == "__main__":
         actionlst.append(action)
         observation, reward, terminated, truncated, info = env.step(action)
         episode_over = terminated or truncated
-        if episode_over:
+        if terminated:
             print(f"observation: {observation["LidarObservation"]}")
 
 
