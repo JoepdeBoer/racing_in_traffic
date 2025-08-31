@@ -115,7 +115,7 @@ if __name__ == "__main__":  # Fixed syntax
     new_model = PPO(
         "MultiInputPolicy",
         env,
-        policy_kwargs=dict(net_arch=dict(pi=[1024, 512, 256], vf=[1024, 512, 256])),
+        policy_kwargs=dict(net_arch=dict(pi=[512, 512], vf=[512, 512])),
         n_steps=nsteps,
         batch_size=batch_size,
         n_epochs=10,
@@ -127,8 +127,8 @@ if __name__ == "__main__":  # Fixed syntax
         vf_coef=0.5,  # Value function coefficient
         max_grad_norm=0.5,  # Gradient clipping for stability
         verbose=2,
-        tensorboard_log="stable2limo_ppo/",
-        device="cpu",
+        tensorboard_log="small2limo_ppo/",
+        device="cuda",
     )
     # new_model.policy.load_state_dict(old_model.policy.state_dict())
 
@@ -138,7 +138,7 @@ if __name__ == "__main__":  # Fixed syntax
         iter += 1
         print(f"Starting training iteration {iter}")
         new_model.learn(total_timesteps=n_timesteps, reset_num_timesteps=False)
-        new_model.save(f"models/stable2vip-{iter}")
+        new_model.save(f"models/small2vip-{iter}")
         print(f"Model saved as stable2vip-{iter}")
 
         # Optional: Add a break condition to avoid infinite training

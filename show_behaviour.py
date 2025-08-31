@@ -2,7 +2,7 @@ from time import sleep
 from stable_baselines3 import PPO
 import gymnasium as gym
 import matplotlib.pyplot as plt
-from train import config
+from train2 import config
 
 
 if __name__ == "__main__":
@@ -10,7 +10,7 @@ if __name__ == "__main__":
     # config['screen_height'] = 1000
 
     env = gym.make("racetrack-large-v0", config=config, render_mode = "human")
-    modelpath = "./models/bigbrainvip-11"
+    modelpath = "./models/small2vip-27"
     model = PPO.load(modelpath, env=env, device ="cpu")
     observation, info = env.reset()
     episode_over = False
