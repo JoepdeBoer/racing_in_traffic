@@ -4,7 +4,7 @@ import gymnasium as gym
 
 config["manual_control"] = True
 # config["controlled_vehicles"] = 1
-config["other_vehicles"] = 0
+# config["other_vehicles"] = 2
 # config["average_speed"] = 6
 # config["speed_limit"] = 10
 # config['simulation_frequency'] = 15

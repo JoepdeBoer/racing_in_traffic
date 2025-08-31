@@ -12,9 +12,9 @@ kinematics = {"type": "Kinematics",
               "vehicles_count": 1}
 
 occupancy_grid = {"type": "OccupancyGrid",
-                  "features": ["presence", "on_road"],
-                  "grid_size": [[0, 40], [-8, 8]],
-                  "grid_step": [1, 1],
+                  "features": ["on_road"],
+                  "grid_size": [[0, 48], [-16, 16]],
+                  "grid_step": [3, 3],
                   "as_image": False,
                   "align_to_vehicle_axes": True, }
 
@@ -50,8 +50,8 @@ config = {
     "screen_width": 600,
     "screen_height": 600,
     "centering_position": [0.5, 0.5],
-    "speed_limit": 10,
-    "average_speed": 7,
+    "speed_limit": 7,
+    "average_speed": 5,
     "terminate_off_road": True,
 }
 
