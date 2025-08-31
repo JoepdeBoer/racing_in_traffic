@@ -115,11 +115,11 @@ if __name__ == "__main__":  # Fixed syntax
     new_model = PPO(
         "MultiInputPolicy",
         env,
-        policy_kwargs=dict(net_arch=dict(pi=[1024, 512, 256], vf=[1024, 512, 256])),
+        policy_kwargs=dict(net_arch=dict(pi=[128, 128], vf=[128, 128])),
         n_steps=nsteps,
         batch_size=batch_size,
         n_epochs=10,
-        learning_rate=3e-4,
+        learning_rate=6e-3,
         gamma=0.99,  # Increased from 0.9 for better long-term rewards
         gae_lambda=0.95,  # Added GAE lambda for more stable advantage estimation
         clip_range=0.2,
@@ -127,18 +127,19 @@ if __name__ == "__main__":  # Fixed syntax
         vf_coef=0.5,  # Value function coefficient
         max_grad_norm=0.5,  # Gradient clipping for stability
         verbose=2,
-        tensorboard_log="stable2limo_ppo/",
+        tensorboard_log="learningsuperfast/",
         device="cpu",
+        target_kl = 0.01,
     )
     # new_model.policy.load_state_dict(old_model.policy.state_dict())
-
+    #new_model = PPO.load("./models/learningfast-1.zip", env=env, device="cpu")
     # Training loop
-    iter = 0  # Start from 0 if creating new model
+    iter = 1  # Start from 0 if creating new model
     while True:
         iter += 1
         print(f"Starting training iteration {iter}")
         new_model.learn(total_timesteps=n_timesteps, reset_num_timesteps=False)
-        new_model.save(f"models/stable2vip-{iter}")
+        new_model.save(f"models/learningsuperfast-{iter}")
         print(f"Model saved as stable2vip-{iter}")
 
         # Optional: Add a break condition to avoid infinite training

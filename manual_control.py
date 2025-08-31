@@ -1,8 +1,29 @@
 from train import config
 import gymnasium as gym
+kinematics = {"type": "Kinematics",
+              "features": ["x", "vx", "vy"],
+              "absolute": False,
+              "normalize": True,
+              "vehicles_count": 1}
 
+occupancy_grid = {"type": "OccupancyGrid",
+                  "features": ["on_road"],
+                  "grid_size": [[0, 48], [-16, 16]],
+                  "grid_step": [3, 3],
+                  "as_image": False,
+                  "align_to_vehicle_axes": True, }
+
+Lidar = {"type": "LidarObservation",
+         "cells": 64,
+         "maximum_range": 64,
+         "normalize": True,
+         }
+
+observation = {"type": "DictObservation",
+               "observation_configs": [kinematics, Lidar, occupancy_grid]}
 
 config["manual_control"] = True
+config["observation"] = observation
 # config["controlled_vehicles"] = 1
 # config["other_vehicles"] = 2
 # config["average_speed"] = 6
