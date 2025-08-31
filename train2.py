@@ -57,7 +57,7 @@ config = {
 
 
 def make_env():
-    return gym.make("racetrack-large-v0", config=config)
+    return gym.make("racetrack-large-v0", config=config, max_episode_steps=512)
 
 
 def test_observation_space():
@@ -80,8 +80,8 @@ if __name__ == "__main__":  # Fixed syntax
     n_runs = 10  # number of training runs
     n_timesteps = int(1e5)  # Convert to int for cleaner code
 
-    cores = 8
-    nsteps = 128
+    cores = 12
+    nsteps = 512
     training_data = nsteps * cores
     batch_size = training_data // 8
 
@@ -112,9 +112,6 @@ if __name__ == "__main__":  # Fixed syntax
     # )
 
 
-    iter = 11
-    old_model = PPO.load(f"models/bigbrainvip-{iter}", env=env, device='cpu')
-
     new_model = PPO(
         "MultiInputPolicy",
         env,
@@ -126,24 +123,22 @@ if __name__ == "__main__":  # Fixed syntax
         gamma=0.99,  # Increased from 0.9 for better long-term rewards
         gae_lambda=0.95,  # Added GAE lambda for more stable advantage estimation
         clip_range=0.2,
-        ent_coef=0.01,  # Small entropy coefficient to encourage exploration
+        # ent_coef=0.01,  # Small entropy coefficient to encourage exploration
         vf_coef=0.5,  # Value function coefficient
         max_grad_norm=0.5,  # Gradient clipping for stability
         verbose=2,
-        tensorboard_log="bigbrain2limo_ppo/",
+        tensorboard_log="stable2limo_ppo/",
         device="cpu",
     )
-    new_model.policy.load_state_dict(old_model.policy.state_dict())
+    # new_model.policy.load_state_dict(old_model.policy.state_dict())
 
     # Training loop
-    iter = 11  # Start from 0 if creating new model
+    iter = 0  # Start from 0 if creating new model
     while True:
         iter += 1
         print(f"Starting training iteration {iter}")
         new_model.learn(total_timesteps=n_timesteps, reset_num_timesteps=False)
-        new_model.save(f"models/bigbrainvip-{iter}")
-        print(f"Model saved as bigbrainvip-{iter}")
+        new_model.save(f"models/stable2vip-{iter}")
+        print(f"Model saved as stable2vip-{iter}")
 
         # Optional: Add a break condition to avoid infinite training
-        if iter >= n_runs:
-            break
